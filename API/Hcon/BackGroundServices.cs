@@ -1,5 +1,8 @@
 ﻿
 using BackEnd.Model;
+using BackEnd.UOF;
+using businessLogic.BL;
+using businessLogic.Model;
 using DataBack.Data;
 using Microsoft.AspNetCore.SignalR;
 using System.Text.Json;
@@ -36,8 +39,8 @@ namespace API.Hcon
         {
             using (var scope = scopeFactory.CreateScope())
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<OrderContext>();
-                var result = dbContext.products.ToList(); ;
+                var uof = scope.ServiceProvider.GetRequiredService<ProductBL>();
+                var result = await uof.All() ;
                 if (result == null || result.Count ==0)
                 {
                     await _messageHub.Clients.All.SendOffersToUser
@@ -45,7 +48,7 @@ namespace API.Hcon
                 }
                 else
                 {
-                    string xb = JsonSerializer.Serialize<List<Products>>(result);
+                    string xb = JsonSerializer.Serialize<List<ProductsUI>>(result) ;
                     await _messageHub.Clients.All.SendOffersToUser(xb);
                 }
             }

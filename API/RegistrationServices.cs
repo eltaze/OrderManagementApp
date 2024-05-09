@@ -35,7 +35,8 @@ public static class RegistrationServices
         builder.Services.AddScoped<IUOF,UOF>();
         //configure Auto Send Message to Client 
         builder.Services.AddHostedService<BackGroundServices>();
-       
+        //In-Memory Cach
+        builder.Services.AddMemoryCache();
         builder.Services.AddResponseCompression(otn =>
         {
             otn.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" });
