@@ -3,15 +3,17 @@ using BackEnd.Model;
 using BackEnd.UOF;
 using businessLogic.Model;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 
 
 namespace businessLogic.BL
 {
-    public class ProductBL(IMapper mapper,IUOF uOF,IMemoryCache cache) 
+    public class ProductBL(IMapper mapper,IUOF uOF,IMemoryCache cache, IConfiguration Cofig) 
     {
         private readonly IMapper mapper = mapper;
         private readonly IUOF uOF = uOF;
         private readonly IMemoryCache cache = cache;
+        private readonly IConfiguration cofig = Cofig;
 
         public async Task<bool> Add(ProductsUI entity)
         {
@@ -23,13 +25,14 @@ namespace businessLogic.BL
 
         public async Task<List<ProductsUI>> All()
         {
+            int fromsec = int.Parse(Cofig.GetSection("CashTime").Value);
             var output = cache.Get<List<ProductsUI>>("Products");
             if(output == null || output.Count==0) 
             {
                 var result = await uOF.product.All();
                 if (result == null) { return null; }
                 output = mapper.Map<List<ProductsUI>>(result.ToList());
-                cache.Set<List<ProductsUI>>("Products",output,TimeSpan.FromMinutes(15));
+                cache.Set<List<ProductsUI>>("Products",output,TimeSpan.FromMinutes(fromsec));
             }
             return output;
                
