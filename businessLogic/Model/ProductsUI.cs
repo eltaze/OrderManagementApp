@@ -12,7 +12,7 @@ namespace businessLogic.Model
         public string Description { get; set; }
         
         public decimal Price { get; set; }
-        public List<OrderDetails> Details { get; set; } = new();
+       // public List<OrderDetails> Details { get; set; } = new();
         
     }
 }

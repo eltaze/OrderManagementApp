@@ -1,8 +1,5 @@
 using API;
 using API.Hcon;
-using DataBack.Data;
-using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +8,7 @@ RegistrationServices.ConfigureServices(builder);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -18,13 +16,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("CORSPolicy");
-app.UseCors(x => x
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
-app.UseAuthorization();
-app.UseCors("AllowOrigin");
-app.MapControllers();
+app.UseCors(option => option.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+
 app.MapHub<ConHub>("/Connection");
+app.MapControllers();
 app.Run();
+

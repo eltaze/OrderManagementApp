@@ -25,14 +25,14 @@ namespace businessLogic.BL
 
         public async Task<List<ProductsUI>> All()
         {
-            int fromsec = int.Parse(Cofig.GetSection("CashTime").Value);
+            //int fromsec = int.Parse(Cofig.GetSection("CashTime").Value);
             var output = cache.Get<List<ProductsUI>>("Products");
             if(output == null || output.Count==0) 
             {
                 var result = await uOF.product.All();
                 if (result == null) { return null; }
                 output = mapper.Map<List<ProductsUI>>(result.ToList());
-                cache.Set<List<ProductsUI>>("Products",output,TimeSpan.FromMinutes(fromsec));
+                cache.Set<List<ProductsUI>>("Products",output,TimeSpan.FromMinutes(5));
             }
             return output;
                

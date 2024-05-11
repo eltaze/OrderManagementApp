@@ -13,6 +13,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace API;
 public static class RegistrationServices
 {
+   
+
     public static void ConfigureServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddControllers();
@@ -43,15 +45,16 @@ public static class RegistrationServices
 
         });
         //configuring Core for Angular and SingalR
-        builder.Services.AddCors(options =>
-        {
-            options.AddPolicy("CORSPolicy",
-                builder => builder
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials()
-                .SetIsOriginAllowed((hosts) => true));
-        });
+        //builder.Services.AddCors(options =>
+        //{
+        //    options.AddPolicy(name: "myAllowSpecificOrigins",
+        //                      policy =>
+        //                      {
+        //                          policy.WithOrigins("http://localhost:4200",
+        //                                              "http://localhost:4200");
+        //                      });
+        //});
+        
     }
     private static IMapper ConfigurAtuoMaper()
     {

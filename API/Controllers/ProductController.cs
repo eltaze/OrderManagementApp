@@ -1,16 +1,18 @@
 ﻿using businessLogic.BL;
 using businessLogic.Model;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace API.Controllers
 {
+    [EnableCors]  
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController(ProductBL productBL) : ControllerBase
     {
         private readonly ProductBL productBL = productBL;
-
+        [EnableCors]
         [HttpGet]
         public async Task<ActionResult<List<ProductsUI>>>GetAll()
         {
