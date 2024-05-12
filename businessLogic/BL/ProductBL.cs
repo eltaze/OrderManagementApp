@@ -20,19 +20,20 @@ namespace businessLogic.BL
             var prod  =mapper.Map<Products>(entity);
           var result= await uOF.product.Add(prod);
             await uOF.ComplateTask();
+            await updatecashe();
             return result;
         }
 
         public async Task<List<ProductsUI>> All()
         {
-            //int fromsec = int.Parse(Cofig.GetSection("CashTime").Value);
+            int fromsec = int.Parse(Cofig.GetSection("CashTime").Value);
             var output = cache.Get<List<ProductsUI>>("Products");
             if(output == null || output.Count==0) 
             {
                 var result = await uOF.product.All();
                 if (result == null) { return null; }
                 output = mapper.Map<List<ProductsUI>>(result.ToList());
-                cache.Set<List<ProductsUI>>("Products",output,TimeSpan.FromMinutes(5));
+                cache.Set<List<ProductsUI>>("Products",output,TimeSpan.FromMinutes(fromsec));
             }
             return output;
                
@@ -41,6 +42,7 @@ namespace businessLogic.BL
         {
            var result = await uOF.product.Delete(id);
             await uOF.ComplateTask();
+            await updatecashe();
             return result;
         }
 
@@ -61,7 +63,13 @@ namespace businessLogic.BL
             var prod = mapper.Map<Products>(entity);
             var result = await uOF.product.Update(prod);
             await uOF.ComplateTask();
+            await updatecashe();
             return result;
+        }
+        private async Task updatecashe()
+        {
+            cache.Remove("Products");
+            await All();
         }
     }
 }
