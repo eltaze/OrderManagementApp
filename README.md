@@ -1,4 +1,4 @@
-Order Managment System API
+Order Managment System API 
 ≠======================
 Technology : 
       APS. NET MVC as webapi
@@ -17,8 +17,8 @@ Variable can be change
       Appsetting.json 
          Name:  Time : value in seconds numbers only default is 30 seconds 
          Data type : int
-         Used.:time for send massage through SignalR 
-       Name: CashTime : value in minutes numbers only default is 15 
+         Used.:time for sending massage through SignalR - defualt 5 sec
+       Name: CashTime :  cash memory hold products data - default is 15 min
       Data type: int
       Useing : time for data cash Memeory can hold before refresh it back from database 
 DataBase design 3 tables products, orders and order details in relation master child
