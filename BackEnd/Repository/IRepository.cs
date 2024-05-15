@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+namespace BackEnd.Repository;
 
-namespace BackEnd.Repository
+public interface IRepository<T> where T : class
 {
-    public interface IRepository<T> where T : class
-    {
-        Task<IEnumerable<T>> All(); 
-        Task<T> GetById(object id);
-        Task<List<T>> GetByT(object id, string name);
+    Task<IEnumerable<T>> All(); 
+    Task<T> GetById(object id);
 
-        Task<bool> Add(T entity);
+    Task<bool> Add(T entity);
 
-        Task<bool> Delete(object id);
+    Task<bool> Delete(object id);
 
-        Task<bool> Update(T entity);
-    }
-
+    Task<bool> Update(T entity);
 }
 
