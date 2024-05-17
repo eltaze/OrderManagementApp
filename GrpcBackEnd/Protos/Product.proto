@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+option csharp_namespace = "ProductGrpcServices.Protos";
+
+package ProductServices;
+
+service ProductServices {
+	rpc GetAllProduct(emty) returns (ProductModels);
+	rpc GetByName(ProductName) returns (ProductModels);
+	rpc GetProductbyId(ProductsLookupModel) returns(ProductModel);
+	rpc CreateProduct(CreateProducts) returns(productIsDelete);
+	rpc Updateproduct(UpdateProduct) returns(productIsDelete);
+	rpc DeleteProduct(DeleteProductRequest)returns(productIsDelete);
+
+}
+message ProductsLookupModel
+{
+	int32 ProductId=1;
+}
+message ProductModel
+{
+	int32 id=1;
+	string ProductName =2;
+	string discription=3;
+	double price=4;
+}
+message ProductName
+{
+	string Name=1;
+}
+
+message DeleteProductRequest{
+	int32 ProductId=1;
+}
+message productIsDelete{
+	bool isDelete = 1;
+}
+message UpdateProduct{
+	ProductModel product =1;
+}
+message CreateProducts
+{
+	ProductModel product =1;
+}
+message emty
+{
+
+}
+message ProductModels
+{
+	repeated ProductModel products =1;
+}

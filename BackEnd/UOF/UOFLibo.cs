@@ -1,17 +1,15 @@
 ﻿
 namespace BackEnd.UOF;
 
-public class UOF : IUOF,IDisposable
+public class UOFLibo : IUOF,IDisposable
 {
     private readonly OrderContext _context;
-
-    
     public ProductRepo product { get; private set; } 
     public OrderRepo Order { get; private set; }
     public OrderDetailsRepo OrderDetails { get;private set; }
 
    
-    public UOF(OrderContext context)
+    public UOFLibo(OrderContext context)
     {
         _context = context;
         product = new ProductRepo(context);
