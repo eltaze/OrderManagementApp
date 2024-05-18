@@ -19,10 +19,11 @@ message ProductsLookupModel
 }
 message ProductModel
 {
-	int32 id=1;
-	string ProductName =2;
-	string discription=3;
-	double price=4;
+	
+    int32 Id =1;  
+    string Name =2;
+    string Description =3;
+    double Price =4;
 }
 message ProductName
 {

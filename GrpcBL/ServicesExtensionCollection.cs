@@ -2,10 +2,6 @@
 using GrpcBL.BL;
 using GrpcBL.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using ProductGrpcServices.Protos;
-using System.Net.NetworkInformation;
-using System.Security.Policy;
-using System.Threading.Channels;
 
 
 namespace GrpcBL;

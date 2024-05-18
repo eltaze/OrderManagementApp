@@ -44,7 +44,11 @@ public class ProductGrpc: ProductServices.ProductServicesBase
         ProductModels products = new();
         foreach (var item in GetProducts)
         {
-            products.Products.Add(mapper.Map<ProductModel>(item));
+            ProductModel bl = new ProductModel { 
+                Name = item.Name ,
+                Description=item.Description,
+                Id =item.Id, Price= (double)(item.Price) };
+            products.Products.Add(bl);
         }
         return products;
     }
@@ -64,8 +68,14 @@ public class ProductGrpc: ProductServices.ProductServicesBase
     }
     public override async Task<productIsDelete> CreateProduct(CreateProducts request, ServerCallContext context)
     {
-        var result = mapper.Map<ProductsUI>(request.Product);
-        var ISupdate = await productBL.Add(result);
+        ProductsUI product = new ProductsUI 
+        { Price = (decimal)(request.Product.Price),
+         Id =request.Product.Id,
+         Name = request.Product.Name ,
+         Description =request.Product.Description
+        };
+        
+        var ISupdate = await productBL.Add(product);
         var respon = new productIsDelete { IsDelete = ISupdate };
         return respon;
     }

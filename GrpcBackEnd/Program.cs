@@ -2,13 +2,13 @@ using AutoMapper;
 using businessLogic;
 using businessLogic.Model;
 using GrpcBackEnd.Services;
-
 using ProductGrpcServices.Protos;
 
 var builder = WebApplication.CreateBuilder(args);
 IMapper mapper = ConfigurAtuoMaper();
 builder.Services.AddSingleton(mapper);// Add services to the container.
 builder.Services.BusineAdd();
+builder.Services.Configure<IConfiguration>(ConfigureServices());
 builder.Services.AddGrpc(option =>
 {
     option.EnableDetailedErrors = true;
@@ -32,4 +32,9 @@ static IMapper ConfigurAtuoMaper()
     });
     var mapper = config.CreateMapper();
     return mapper;
+}
+static IConfiguration ConfigureServices()
+{
+    var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+    return configuration;
 }
