@@ -11,7 +11,7 @@ public class OrderDetails
     [MaxLength(100)]
     public string Unit {  get; set; }
     [Required]
-    public decimal Price { get; set; }
+    public double Price { get; set; }
     [Required]
     public int OrderId { get; set; }
    

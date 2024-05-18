@@ -12,7 +12,7 @@ public class Products
     [MaxLength(250)]
     public string Description { get; set; }
     [Required]
-    public decimal Price { get; set; }
+    public double Price { get; set; }
     public List<OrderDetails> Details { get; set; } = new();
     
 }

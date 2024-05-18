@@ -9,7 +9,7 @@ public class ProductsUI
    
     public string Description { get; set; }
     
-    public decimal Price { get; set; }
+    public double Price { get; set; }
     public List<OrderDetails> Details { get; set; } = new();
     
 }

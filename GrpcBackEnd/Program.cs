@@ -5,8 +5,7 @@ using GrpcBackEnd.Services;
 using ProductGrpcServices.Protos;
 
 var builder = WebApplication.CreateBuilder(args);
-IMapper mapper = ConfigurAtuoMaper();
-builder.Services.AddSingleton(mapper);// Add services to the container.
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.BusineAdd();
 builder.Services.Configure<IConfiguration>(ConfigureServices());
 builder.Services.AddGrpc(option =>
@@ -24,15 +23,6 @@ app.MapGet("/", () => "Communication with gRPC endpoints must be made through a 
 
 app.Run();
 
-static IMapper ConfigurAtuoMaper()
-{
-    var config = new MapperConfiguration(cfg =>
-    {
-        cfg.CreateMap<ProductsUI, ProductModel>().ReverseMap();
-    });
-    var mapper = config.CreateMapper();
-    return mapper;
-}
 static IConfiguration ConfigureServices()
 {
     var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();

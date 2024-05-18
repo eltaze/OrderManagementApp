@@ -10,19 +10,6 @@ public static class ServicesExtensionCollection
 {
     public static void AddGrpcBl(this IServiceCollection services) 
     {
-    //     var channel = GrpcChannel.ForAddress(
-    //    "https://localhost:7036",
-    //new GrpcChannelOptions
-    //        {
-    //          HttpHandler = new HttpClientHandler()
-    //         });
-
-        //var client = new ProductServices.ProductServicesClient(channel);
-        //services.AddGrpcClient<ProductServices.ProductServicesClient>(option =>
-        //{
-            
-        //});
-        
         services.AddScoped<IProductServices, ProductServ>();
     }
 }

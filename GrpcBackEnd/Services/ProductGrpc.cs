@@ -54,8 +54,15 @@ public class ProductGrpc: ProductServices.ProductServicesBase
     }
     public override async Task<productIsDelete> Updateproduct(UpdateProduct request, ServerCallContext context)
     {
-        var result = mapper.Map<ProductsUI>(request.Product);
-        var ISupdate = await productBL.Update(result);
+        //var result = mapper.Map<ProductsUI>(request.Product);
+        ProductsUI product = new ProductsUI
+        {
+            Price = request.Product.Price,
+            Id = request.Product.Id,
+            Name = request.Product.Name,
+            Description = request.Product.Description
+        };
+        var ISupdate = await productBL.Update(product);
         var respon = new productIsDelete { IsDelete = ISupdate };
         return respon;
     }
@@ -68,13 +75,14 @@ public class ProductGrpc: ProductServices.ProductServicesBase
     }
     public override async Task<productIsDelete> CreateProduct(CreateProducts request, ServerCallContext context)
     {
-        ProductsUI product = new ProductsUI 
-        { Price = (decimal)(request.Product.Price),
-         Id =request.Product.Id,
-         Name = request.Product.Name ,
-         Description =request.Product.Description
+        ProductsUI product = new ProductsUI
+        {
+            Price = request.Product.Price,
+            Id = request.Product.Id,
+            Name = request.Product.Name,
+            Description = request.Product.Description
         };
-        
+       // product =this.mapper.Map<ProductsUI>(request.Product);
         var ISupdate = await productBL.Add(product);
         var respon = new productIsDelete { IsDelete = ISupdate };
         return respon;
