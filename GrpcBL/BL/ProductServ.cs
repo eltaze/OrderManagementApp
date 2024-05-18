@@ -13,14 +13,8 @@ namespace GrpcBL.BL
 
         public ProductServ()
         {
-            AppContext.SetSwitch(
-    "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-
-            var handler = new HttpClientHandler();
-            handler.ServerCertificateCustomValidationCallback =
-                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-
-            var channel = GrpcChannel.ForAddress("https://127.0.0.1:5001");
+            
+            var channel = GrpcChannel.ForAddress("https://localhost:5001");
               //  ,new GrpcChannelOptions { HttpHandler = handler });
             productGrpc = new ProductServices.ProductServicesClient(channel);
         }
