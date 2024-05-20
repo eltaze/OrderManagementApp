@@ -1,0 +1,57 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+
+option csharp_namespace = "Eltaze.Protos";
+
+package Orders_Service;
+
+service OrdersServices
+{
+    rpc GettAll(Emty)returns(OrderModels);
+    rpc GetByOrderId (orderLookUp) returns (OrderModel);
+    rpc GetByCustomerName(GetByCustomer) returns (OrderModels);
+    rpc GetByOrderDate(GetByDate) returns (OrderModels);
+    rpc Ctreate(OrderModel) returns (OrderIsDone);
+    rpc Delete (orderLookUp) returns (OrderIsDone);
+    rpc Update(OrderModel) returns (OrderIsDone);
+}
+message orderLookUp
+{
+	int32 id =1;
+}
+message OrderModel
+{
+    int32 Id =1; 
+    string CustomerName =2;
+    string CustomerEmail =3;
+    string CustomerAddress =4;
+    google.protobuf.Timestamp orderDate =5;
+    google.protobuf.Timestamp DueDate =6;
+      
+}
+message Emty
+{
+
+}
+message OrderModels
+{
+    repeated OrderModel orderModel =1;
+}
+message GetByCustomer
+{
+   string Name  =1;
+}
+message GetByDate
+{
+    google.protobuf.Timestamp StartDate =1;
+    google.protobuf.Timestamp EndDate =2;
+}
+message GettAll
+{
+    OrderModels OrderModels=1;
+}
+message OrderIsDone
+{
+    bool rest =1;
+}

@@ -7,11 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Protos\OrderDetails.proto" />
+    <None Remove="Protos\Orders.proto" />
     <None Remove="Protos\Product.proto" />
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\greet.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\OrderDetails.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\Orders.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\Product.proto" GrpcServices="Server">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Protobuf>
@@ -19,12 +22,13 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="Grpc.AspNetCore" Version="2.57.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.62.0" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.5" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\businessLogic\businessLogic.csproj" />
+    <ProjectReference Include="..\GrpcBL\GrpcBL.csproj" />
   </ItemGroup>
 
 </Project>

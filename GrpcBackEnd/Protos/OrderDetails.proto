@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option csharp_namespace = "Eltaze.Protos";
+
+package OrderDetailServices;
+
+service OrderDetailsServices
+{
+	rpc GetByOrderId (Id) returns (OrderDetails);
+    rpc GetByProductId(Id) returns (OrderDetails);
+    rpc Create(OrderDetail) returns (IsordDet);
+    rpc Update(OrderDetail) returns (IsordDet);
+    rpc Delete(Id)returns (IsordDet);
+}
+message emty
+{
+
+}
+message Id
+{
+    int32 id =1;
+}
+message OrderDetail
+{
+    int32 Id =1;
+    int32  PridcutId =2;
+    string Unit =3;
+    double Price =4;
+    int32 OrderId =5;
+}
+message OrderDetails
+{
+    repeated OrderDetail OrderDetails=1;
+}
+message IsordDet
+{
+    bool IsDone =1;
+}
