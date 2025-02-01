@@ -26,7 +26,7 @@ public static class RegistrationServices
         IMapper mapper = ConfigurAtuoMaper();
         builder.Services.AddSingleton(mapper);
         //Adding SignalR
-        builder.Services.AddSignalR();
+       // builder.Services.AddSignalR();
         //Configuring EF
         builder.Services.AddDbContext<InvoiceContext>(option =>
         option.UseInMemoryDatabase("OrdersDB"));
@@ -39,7 +39,7 @@ public static class RegistrationServices
         //Configure unit of work
         builder.Services.AddScoped<IUOF, UOFLibo>();
         //configure Auto Send Message to Client 
-        builder.Services.AddHostedService<BackGroundServices>();
+     //   builder.Services.AddHostedService<BackGroundServices>();
         //In-Memory Cach
         builder.Services.AddMemoryCache();
         builder.Services.AddResponseCompression(otn =>

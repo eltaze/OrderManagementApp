@@ -11,5 +11,7 @@ public interface IRepository<T> where T : class
     Task<bool> Delete(object id);
 
     Task<bool> Update(T entity);
+     List<T> GetPaged<T>(int pageNumber, int pageSize = 10) where T : class;
+
 }
 

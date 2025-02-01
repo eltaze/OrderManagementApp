@@ -48,4 +48,18 @@ public abstract class RepositoryG<T> : IRepository<T> where T : class
             return true;
         }
     }
+    public List<T> GetPaged<T>(int pageNumber, int pageSize = 10) where T : class
+    {
+        var dbSet = _context.Set<T>();
+
+        var propertyInfo = typeof(T).GetProperty("Id");
+
+        List<T> result = dbSet
+            .OrderBy(e => EF.Property<object>(e, "Id"))  
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        return result;
+    }
 }

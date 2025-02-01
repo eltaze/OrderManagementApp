@@ -11,6 +11,7 @@ using System.IdentityModel.Tokens.Jwt;
 using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 namespace API.Controllers
 {
     [EnableCors]
@@ -32,6 +33,24 @@ namespace API.Controllers
             {
                 return new ObjectResult(GenrateToek(result));
             }
+        }
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("Register")]
+        public ActionResult CreateUser(string username,string password)
+        {
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            {
+                return BadRequest();
+            }
+            UsersUI users = new UsersUI
+            {
+                Id =1,
+                UserName = username,
+                Password = password
+            };
+            userBL.Add(users);
+            return Ok();
         }
         private  dynamic GenrateToek(UsersUI user)
         {

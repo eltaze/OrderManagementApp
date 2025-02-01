@@ -5,13 +5,16 @@ public class InvoicDetails
 {
     public int Id { get; set; }
     [Required]
-    public int PridcutId { get; set; }
+    public Products Products { get; set; }
     [MaxLength(100)]
     public string Unit { get; set; }
     [Required]
     public double Price { get; set; }
     [Required]
-    public int OrderId { get; set; }
+    public Invoices invoices { get; set; }
+
+    public int invoiceId { get; set; }
+    public int ProductId { get; set; }
 
 
 

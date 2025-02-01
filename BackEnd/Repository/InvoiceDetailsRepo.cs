@@ -12,12 +12,12 @@ public class InvoiceDetailsRepo : RepositoryG<InvoicDetails>
     }
     public List<InvoicDetails> GetByOrderId(int id)
     {
-        var result = dbSet.Where(x => x.OrderId.Equals(id));
+        var result = dbSet.Where(x => x.invoices.Id.Equals(id));
         return result.ToList();
     }
     public List<InvoicDetails> GetByProdcutId(int id)
     {
-        var result = dbSet.Where(x => x.PridcutId.Equals(id));
+        var result = dbSet.Where(x => x.Products.Id.Equals(id));
         return result.ToList();
     }
 }

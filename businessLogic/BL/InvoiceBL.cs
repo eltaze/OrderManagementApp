@@ -1,4 +1,5 @@
-﻿namespace businessLogic.BL;
+﻿using Microsoft.EntityFrameworkCore.InMemory.ValueGeneration.Internal;
+namespace businessLogic.BL;
 
 public class InvoiceBL(IMapper mapper, IUOF uOF) : IInvoiceBL
 {
