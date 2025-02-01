@@ -1,8 +1,7 @@
 ﻿using businessLogic.Model;
 using Grpc.Net.Client;
 using GrpcBL.Interfaces;
-using ProductGrpcServices.Protos;
-
+using Eltaze.Protos;
 
 namespace GrpcBL.BL;
 
@@ -13,16 +12,16 @@ public class ProductServ : IProductServices
 
     public ProductServ()
     {
-        
+
         var channel = GrpcChannel.ForAddress("https://localhost:5001");
-          //  ,new GrpcChannelOptions { HttpHandler = handler });
+        //  ,new GrpcChannelOptions { HttpHandler = handler });
         productGrpc = new ProductServices.ProductServicesClient(channel);
     }
-    
+
     public List<ProductsUI> GetProduct()
     {
         emty emty = new emty();
-        
+
         var result = productGrpc.GetAllProduct(emty);
         List<ProductsUI> respons = new();
         foreach (ProductModel model in result.Products)
@@ -36,7 +35,7 @@ public class ProductServ : IProductServices
         }
         return respons;
     }
-    public bool  Create(ProductsUI model)
+    public bool Create(ProductsUI model)
     {
         //CancellationToken cancellationToken = new CancellationToken();
         ProductModel mod = new();
@@ -64,7 +63,7 @@ public class ProductServ : IProductServices
         bool x = result.IsDelete;
         return x;
     }
-    public bool Detele (int id)
+    public bool Detele(int id)
     {
         DeleteProductRequest request = new DeleteProductRequest();
         request.ProductId = id;
@@ -73,7 +72,7 @@ public class ProductServ : IProductServices
     }
     public List<ProductsUI> GetProductByName(string name)
     {
-        ProductName nam=new ProductName();
+        ProductName nam = new ProductName();
         nam.Name = name;
 
         var result = productGrpc.GetByName(nam);
@@ -89,12 +88,12 @@ public class ProductServ : IProductServices
         }
         return respons;
     }
-    public ProductsUI GetProductById(int id) 
+    public ProductsUI GetProductById(int id)
     {
         ProductsLookupModel model = new ProductsLookupModel();
         model.ProductId = id;
         var rest = productGrpc.GetProductbyId(model);
-        ProductsUI respons = new ProductsUI 
+        ProductsUI respons = new ProductsUI
         {
             Id = rest.Id,
             Name = rest.Name,

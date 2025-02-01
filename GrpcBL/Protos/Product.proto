@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-option csharp_namespace = "ProductGrpcServices.Protos";
+option csharp_namespace = "Eltaze.Protos";
 
-package ProductServices;
+package ProdcutServices;
 
 service ProductServices {
 	rpc GetAllProduct(emty) returns (ProductModels);

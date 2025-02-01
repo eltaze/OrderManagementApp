@@ -1,5 +1,4 @@
-﻿using DataBack.Model;
-using Microsoft.AspNetCore.SignalR; 
+﻿using Microsoft.AspNetCore.SignalR;
 
 namespace API.Hcon
 {

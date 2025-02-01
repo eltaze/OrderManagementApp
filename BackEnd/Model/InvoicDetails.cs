@@ -1,19 +1,18 @@
 ﻿
+namespace DataBack.Model;
 
-namespace businessLogic.Model;
-
-public class OrderDetailsUI
+public class InvoicDetails
 {
     public int Id { get; set; }
     [Required]
-    public int  PridcutId { get; set; }
+    public int PridcutId { get; set; }
     [MaxLength(100)]
-    public string Unit {  get; set; }
+    public string Unit { get; set; }
     [Required]
     public double Price { get; set; }
     [Required]
     public int OrderId { get; set; }
-   
+
 
 
 }

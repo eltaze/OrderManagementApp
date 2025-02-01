@@ -1,11 +1,7 @@
-﻿using businessLogic.Interface;
-using businessLogic.Model;
-using Eltaze.Protos;
-using Grpc.Core;
-
+﻿
 namespace GrpcBackEnd.Services
 {
-    public class OrderDetailsGRPC :OrderDetailsServices.OrderDetailsServicesBase
+    public class OrderDetailsGRPC : OrderDetailsServices.OrderDetailsServicesBase
     {
         private readonly IOrderDetailsBL detailsBL;
 
@@ -23,24 +19,64 @@ namespace GrpcBackEnd.Services
                 PridcutId = request.PridcutId,
                 Unit = request.Unit
             };
-            var result =await detailsBL.Add(order);
+            var result = await detailsBL.Add(order);
             return new IsordDet { IsDone = result };
         }
-        public override Task<IsordDet> Delete(Id request, ServerCallContext context)
+        public override async Task<IsordDet> Delete(GetId request, ServerCallContext context)
         {
-            return base.Delete(request, context);
+            var result = await detailsBL.Delete(request.Id);
+            return new IsordDet { IsDone = result };
         }
-        public override Task<OrderDetails> GetByOrderId(Id request, ServerCallContext context)
+        public override async Task<OrderDetails> GetByOrderId(GetId request, ServerCallContext context)
         {
-            return base.GetByOrderId(request, context);
+            OrderDetails orders = new OrderDetails();
+            var result = detailsBL.GetByOrderId(request.Id);
+            foreach (var item in result)
+            {
+                OrderDetail order = new OrderDetail
+                {
+                    Id = item.OrderId,
+                    OrderId = item.OrderId,
+                    Price = item.Price,
+                    PridcutId = item.PridcutId,
+                    Unit = item.Unit
+                };
+                orders.OrderDetails_.Add(order);
+
+            }
+            return orders;
         }
-        public override Task<OrderDetails> GetByProductId(Id request, ServerCallContext context)
+        public override async Task<OrderDetails> GetByProductId(GetId request, ServerCallContext context)
         {
-            return base.GetByProductId(request, context);
+            OrderDetails orders = new OrderDetails();
+            var result = detailsBL.GetByProdcutId(request.Id);
+            foreach (var item in result)
+            {
+                OrderDetail order = new OrderDetail
+                {
+                    Id = item.OrderId,
+                    OrderId = item.OrderId,
+                    Price = item.Price,
+                    PridcutId = item.PridcutId,
+                    Unit = item.Unit
+                };
+                orders.OrderDetails_.Add(order);
+
+            }
+            return orders;
         }
-        public override Task<IsordDet> Update(OrderDetail request, ServerCallContext context)
+        public override async Task<IsordDet> Update(OrderDetail request, ServerCallContext context)
         {
-            return base.Update(request, context);
+            OrderDetailsUI order = new OrderDetailsUI
+            {
+                Id = request.OrderId,
+                OrderId = request.OrderId,
+                Price = request.Price,
+                PridcutId = request.PridcutId,
+                Unit = request.Unit
+            };
+            var result = await detailsBL.Update(order);
+            return new IsordDet { IsDone = result };
         }
     }
 }

@@ -1,17 +1,19 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using BackEnd;
+﻿using BackEnd;
+using BackEnd.Model;
 using businessLogic.BL;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace businessLogic
 {
     public static class ServicesExtensionCollection
     {
-        public static void BusineAdd(this IServiceCollection Services) 
+        public static void BusineAdd(this IServiceCollection Services)
         {
             Services.BackEndServ();
-            Services.AddTransient<IOrderBL, OrderBL>();
+            Services.AddTransient<IInvoiceBL, InvoiceBL>();
             Services.AddTransient<IProductBL, ProductBL>();
-            Services.AddTransient<IOrderDetailsBL, OrderDetailsBL>();
+            Services.AddTransient<IInvoiceDetailsBL, InvoiceDetailsBL>();
+            Services.AddTransient<IUserBL, UsersBL>();
             IMapper mapper = ConfigurAtuoMaper();
             Services.AddSingleton(mapper);
             Services.AddMemoryCache();
@@ -20,10 +22,10 @@ namespace businessLogic
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Order, OrderUI>().ReverseMap();
-                cfg.CreateMap<OrderDetails, OrderDetailsUI>().ReverseMap();
+                cfg.CreateMap<Invoices, InvoiceUI>().ReverseMap();
+                cfg.CreateMap<InvoicDetails, InvoiceDetailsUI>().ReverseMap();
                 cfg.CreateMap<Products, ProductsUI>().ReverseMap();
-
+                cfg.CreateMap<Users, UsersUI>().ReverseMap();
             });
             var mapper = config.CreateMapper();
             return mapper;

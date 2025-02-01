@@ -1,5 +1,4 @@
-﻿
-using businessLogic.BL;
+﻿using businessLogic.BL;
 using businessLogic.Model;
 using DataBack.Data;
 using Microsoft.AspNetCore.SignalR;
@@ -12,7 +11,7 @@ namespace API.Hcon
         private readonly IConfiguration config;
         private Timer? timer;
         private IHubContext<ConHub, IConHubClient> _messageHub;
-        private readonly OrderContext _context;
+        private readonly InvoiceContext _context;
         private readonly IServiceScopeFactory scopeFactory;
         public BackGroundServices(IConfiguration Cofig,
             IHubContext<ConHub, IConHubClient> messageHub,

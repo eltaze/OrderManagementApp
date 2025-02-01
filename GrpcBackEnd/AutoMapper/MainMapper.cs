@@ -1,17 +1,16 @@
 ﻿using AutoMapper;
 using businessLogic.Model;
-using ProductGrpcServices.Protos;
 
 
 namespace GrpcBackEnd.AutoMapper
-{  
-        public class MainMapper : Profile
+{
+    public class MainMapper : Profile
+    {
+        public MainMapper()
         {
-            public MainMapper()
-            {
-                CreateMap<ProductsUI,ProductModel>().ReverseMap();
-            }
+            CreateMap<ProductsUI, ProductModel>().ReverseMap();
         }
-    
+    }
+
 }
 

@@ -1,5 +1,4 @@
 ﻿
-
 namespace DataBack.Model;
 
 public class Products
@@ -13,6 +12,6 @@ public class Products
     public string Description { get; set; }
     [Required]
     public double Price { get; set; }
-    public List<OrderDetails> Details { get; set; } = new();
-    
+    public List<InvoicDetails> Details { get; set; } = new();
+
 }

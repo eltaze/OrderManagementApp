@@ -7,7 +7,7 @@ public class ProductBL(IUOF uOF,
     private readonly IMapper mapper = mapper;
     private readonly IUOF uOF = uOF;
     private readonly IMemoryCache cache = cache;
-    public  List<ProductsUI> GetByName(string Id)
+    public List<ProductsUI> GetByName(string Id)
     {
         var result = uOF.product.getByName(Id);
         if (result == null) { return null; }

@@ -1,17 +1,21 @@
 ﻿using businessLogic.BL;
+using businessLogic.Interface;
 using businessLogic.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace API.Controllers
 {
+    [Authorize]
     [EnableCors]  
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductController(ProductBL productBL) : ControllerBase
+    public class ProductController(IProductBL productBL) : ControllerBase
     {
-        private readonly ProductBL productBL = productBL;
+        private readonly IProductBL productBL = productBL;
+        [AllowAnonymous]
         [EnableCors]
         [HttpGet]
         public async Task<ActionResult<List<ProductsUI>>>GetAll()
@@ -51,7 +55,7 @@ namespace API.Controllers
         [HttpGet ("{Name}")]
         public async Task<List<ProductsUI>> GetAll(string Name)
         {
-            var result = await productBL.GetByName(Name);
+            var result =  productBL.GetByName(Name);
             if(result == null) { BadRequest(); }
             return result;
         }
