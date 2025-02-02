@@ -281,3 +281,207 @@ You already have the backend implemented with controllers for `Invoice`, `Invoic
 
 - Ensure all JWT tokens are handled securely, especially during deployment (for example, using `HTTPS`).
 - You can use libraries such as `ngx-auth` in Angular for advanced token handling.
+
+
+==========================
+To integrate **Bootstrap** into your Angular application and update the code accordingly, follow these steps. This will ensure that your components are styled using Bootstrap’s CSS classes.
+
+### **Step 1: Install Bootstrap in Angular**
+
+You need to add Bootstrap to your Angular project.
+
+1. **Install Bootstrap:**
+
+   Run the following command to install Bootstrap:
+
+   ```bash
+   npm install bootstrap
+   ```
+
+2. **Include Bootstrap CSS:**
+
+   After installing Bootstrap, you need to include its CSS file in your Angular project. Open the `angular.json` file and add the Bootstrap CSS file path to the `styles` array.
+
+   ```json
+   "styles": [
+     "src/styles.css",
+     "node_modules/bootstrap/dist/css/bootstrap.min.css"
+   ]
+   ```
+
+### **Step 2: Update Components to Use Bootstrap**
+
+Now, we will update your Angular components, especially forms, buttons, and modals, to use Bootstrap classes for a responsive and styled UI.
+
+#### **1. Update Login Component to Use Bootstrap**
+
+**login.component.ts:**
+```typescript
+import { Component } from '@angular/core';
+import { AuthService } from './auth.service';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
+})
+export class LoginComponent {
+  username: string = '';
+  password: string = '';
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  onLogin() {
+    this.authService.login(this.username, this.password).subscribe(response => {
+      if (response && response.access_Token) {
+        this.authService.saveToken(response.access_Token);
+        this.router.navigate(['/home']);
+      }
+    }, error => {
+      console.error('Login failed:', error);
+    });
+  }
+}
+```
+
+**login.component.html:**
+```html
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card mt-5">
+        <div class="card-body">
+          <h3 class="card-title text-center">Login</h3>
+          <form (submit)="onLogin()">
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" id="username" class="form-control" [(ngModel)]="username" placeholder="Enter username" required />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" id="password" class="form-control" [(ngModel)]="password" placeholder="Enter password" required />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+### **Step 3: Update Home Page with Bootstrap**
+
+Update the home page where the Kendo Grid is displayed. We'll wrap it with Bootstrap classes for layout and styling.
+
+**home.component.html:**
+```html
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-12">
+      <h3 class="text-center mb-4">Item Management</h3>
+      <button class="btn btn-success mb-3" (click)="openCreateModal()">Add New Item</button>
+      
+      <!-- Displaying the Kendo Grid here -->
+      <kendo-grid [data]="items" [height]="500" [pageSize]="10" (dataStateChange)="onDataStateChange($event)">
+        <kendo-grid-column field="itemName" title="Item Name" width="200"></kendo-grid-column>
+        <kendo-grid-column field="description" title="Description" width="300"></kendo-grid-column>
+        <kendo-grid-column field="price" title="Unit Price" width="100"></kendo-grid-column>
+        <kendo-grid-column field="quantity" title="Quantity" width="100"></kendo-grid-column>
+        <kendo-grid-column>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <button class="btn btn-warning btn-sm" (click)="editItem(dataItem)">Edit</button>
+            <button class="btn btn-danger btn-sm" (click)="deleteItem(dataItem.id)">Delete</button>
+          </ng-template>
+        </kendo-grid-column>
+      </kendo-grid>
+    </div>
+  </div>
+</div>
+```
+
+Here, I added Bootstrap classes to the container, rows, and columns to center and space elements. Buttons are styled with Bootstrap's `btn`, `btn-primary`, `btn-warning`, and `btn-danger`.
+
+### **Step 4: Update Create/Update Item Modal with Bootstrap**
+
+If you're using modals for creating or updating items, use the Bootstrap modal component to create responsive dialogs.
+
+**item-modal.component.html:**
+```html
+<div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="itemModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="itemModalLabel">Create/Update Item</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form (submit)="onSave()">
+          <div class="mb-3">
+            <label for="itemName" class="form-label">Item Name</label>
+            <input type="text" id="itemName" class="form-control" [(ngModel)]="item.name" name="name" required />
+          </div>
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" class="form-control" [(ngModel)]="item.description" name="description"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="price" class="form-label">Price</label>
+            <input type="number" id="price" class="form-control" [(ngModel)]="item.price" name="price" required />
+          </div>
+          <div class="mb-3">
+            <label for="quantity" class="form-label">Quantity</label>
+            <input type="number" id="quantity" class="form-control" [(ngModel)]="item.quantity" name="quantity" required />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+Ensure that you have the necessary functionality in the component to manage the modal's visibility and form submission.
+
+### **Step 5: Update Angular App Routing and Auth Guard to Use Bootstrap Layout**
+
+You can structure your components in Bootstrap's responsive grid system. For example, you can use the **Auth Guard** to restrict access to certain routes and ensure that users are redirected to the login page if they aren’t authenticated.
+
+In `app-routing.module.ts`:
+
+```typescript
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { LoginComponent } from './login/login.component';
+import { HomeComponent } from './home/home.component';
+import { AuthGuard } from './auth.guard';
+
+const routes: Routes = [
+  { path: 'login', component: LoginComponent },
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+```
+
+### **Step 6: Verify Bootstrap Layout for Responsiveness**
+
+Ensure that all components look good on various screen sizes. For example, using the Bootstrap grid system with classes like `col-md-6` for medium screens and `col-12` for mobile will ensure your page is responsive.
+
+### **Final Thoughts:**
+
+- The **login page** is now styled with Bootstrap, including form controls, buttons, and a centered layout.
+- The **home page** integrates Bootstrap for managing the item grid and provides a simple, clean UI for creating and managing items.
+- A **Bootstrap modal** is added for creating and editing items.
+- Ensure you test everything on different screen sizes to ensure the layout is fully responsive.
+
+With these changes, your application will look modern and be responsive, with clean, functional styling provided by Bootstrap!
