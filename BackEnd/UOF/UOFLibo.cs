@@ -21,7 +21,16 @@ public class UOFLibo : IUOF, IDisposable
 
     public async Task ComplateTask()
     {
-        await _context.SaveChangesAsync();
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            // Handle exception (e.g., log the error, rethrow, etc.)
+            Console.WriteLine($"Error occurred: {ex.Message}");
+            throw;  // Optionally rethrow the exception after handling it
+        }
     }
 
     public async void Dispose()

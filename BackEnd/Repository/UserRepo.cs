@@ -18,8 +18,8 @@ namespace BackEnd.Repository
         }
         public Users GetByName(string name , string password)
         {
-            var result = dbSet.Where(x => x.UserName.Equals(name) && x.Password==password);
-            return result.FirstOrDefault();
+            var result = dbSet.Where(x => x.UserName==name && x.Password==password).FirstOrDefault();
+            return result;
         }
     }
 }

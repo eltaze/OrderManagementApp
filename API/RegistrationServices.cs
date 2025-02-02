@@ -29,7 +29,7 @@ public static class RegistrationServices
        // builder.Services.AddSignalR();
         //Configuring EF
         builder.Services.AddDbContext<InvoiceContext>(option =>
-        option.UseInMemoryDatabase("OrdersDB"));
+        option.UseInMemoryDatabase("InvoiceDB"));
         //configure Di For BL
         builder.Services.AddTransient<IInvoiceBL,InvoiceBL>();
         builder.Services.AddTransient<IProductBL,ProductBL>();

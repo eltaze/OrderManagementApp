@@ -12,8 +12,15 @@ public abstract class RepositoryG<T> : IRepository<T> where T : class
     private DbSet<T> dbSet;
     public async Task<bool> Add(T entity)
     {
-        await dbSet.AddAsync(entity);
-        return true;
+        try
+        {
+            await dbSet.AddAsync(entity);
+            return true;
+        }
+        catch (Exception ex) 
+        {
+            return false;
+        }
     }
     public async Task<IEnumerable<T>> All()
     {
