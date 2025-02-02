@@ -1,4 +1,4 @@
-﻿
+
 namespace BackEnd.Repository;
 
 public abstract class RepositoryG<T> : IRepository<T> where T : class

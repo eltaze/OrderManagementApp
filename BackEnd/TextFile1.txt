@@ -1,0 +1,283 @@
+To integrate the provided backend ASP.NET Core API with an Angular frontend, you need to follow a few structured steps. These steps will guide you on setting up your **ASP.NET Core API** to handle the CRUD operations and authentication, then use **Angular** to interact with it. Let's break it down step-by-step:
+
+### **Step 1: Setup Your Backend (ASP.NET Core API)**
+
+You already have the backend implemented with controllers for `Invoice`, `InvoiceDetails`, `Product`, and `User`. Let’s walk through the steps of making sure everything is connected properly.
+
+1. **Install Necessary NuGet Packages:**
+   - `Microsoft.AspNetCore.Cors`: To allow CORS.
+   - `Microsoft.AspNetCore.Authentication.JwtBearer`: To handle JWT authentication.
+   - `Microsoft.EntityFrameworkCore`: For database interaction.
+
+2. **Enable CORS** in your `Startup.cs` or `Program.cs` file:
+   
+   In `Startup.cs` or `Program.cs`, configure CORS to allow requests from your Angular frontend.
+
+   ```csharp
+   public void ConfigureServices(IServiceCollection services)
+   {
+       services.AddCors(options =>
+       {
+           options.AddPolicy("AllowAllOrigins", builder =>
+               builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+       });
+
+       // Add other services here (like controllers, database context, etc.)
+   }
+   
+   public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+   {
+       app.UseCors("AllowAllOrigins");
+
+       // Other middleware configurations...
+   }
+   ```
+
+3. **Configure Authentication** (JWT token):
+   
+   In `Startup.cs` or `Program.cs`, configure JWT authentication to secure your endpoints.
+
+   ```csharp
+   public void ConfigureServices(IServiceCollection services)
+   {
+       services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+           .AddJwtBearer(options =>
+           {
+               options.RequireHttpsMetadata = false;
+               options.SaveToken = true;
+               options.TokenValidationParameters = new TokenValidationParameters
+               {
+                   ValidateIssuer = false,
+                   ValidateAudience = false,
+                   ValidateLifetime = true,
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySecretKeyIsSecretsoDon'tTellAnyOnePlease"))
+               };
+           });
+
+       services.AddControllers();
+   }
+   ```
+
+4. **Enable Authorization** for the endpoints:
+   
+   In each of your controllers, ensure that you are using `[Authorize]` to restrict access to authenticated users:
+
+   ```csharp
+   [Authorize]
+   [Route("api/[controller]")]
+   [ApiController]
+   public class ProductController : ControllerBase
+   {
+       private readonly IProductBL _productBL;
+
+       public ProductController(IProductBL productBL)
+       {
+           _productBL = productBL;
+       }
+
+       [HttpGet]
+       public async Task<ActionResult<List<ProductsUI>>> GetAll()
+       {
+           var result = await _productBL.All();
+           if (result == null) return BadRequest();
+           return Ok(result);
+       }
+
+       // Other CRUD actions...
+   }
+   ```
+
+5. **Generate Tokens for Authentication:**
+   
+   The `UserController` handles login and user registration. The `GenrateToek` method generates a JWT token for users. Ensure that your Angular app sends the token with each request to access protected routes.
+
+---
+
+### **Step 2: Set Up Your Angular Frontend**
+
+1. **Install Angular Dependencies:**
+   
+   In your Angular project, make sure you install necessary dependencies such as Angular's HTTP Client for making API requests.
+
+   ```bash
+   ng add @angular/material
+   npm install @angular/forms @angular/http @angular/cdk @angular/animations
+   ```
+
+2. **Create Authentication Service** in Angular:
+
+   The `AuthService` will manage login, registration, and token storage. It will also handle making authorized HTTP requests by attaching the JWT token in the headers.
+
+   **auth.service.ts:**
+
+   ```typescript
+   import { Injectable } from '@angular/core';
+   import { HttpClient, HttpHeaders } from '@angular/common/http';
+   import { Observable } from 'rxjs';
+
+   @Injectable({
+     providedIn: 'root'
+   })
+   export class AuthService {
+     private apiUrl = 'https://localhost:5001/api/user';
+
+     constructor(private http: HttpClient) {}
+
+     login(username: string, password: string): Observable<any> {
+       return this.http.post(`${this.apiUrl}`, { username, password });
+     }
+
+     register(username: string, password: string): Observable<any> {
+       return this.http.post(`${this.apiUrl}/Register`, { username, password });
+     }
+
+     saveToken(token: string): void {
+       localStorage.setItem('access_token', token);
+     }
+
+     getToken(): string | null {
+       return localStorage.getItem('access_token');
+     }
+
+     isAuthenticated(): boolean {
+       return this.getToken() != null;
+     }
+
+     logout(): void {
+       localStorage.removeItem('access_token');
+     }
+
+     getHeaders() {
+       return new HttpHeaders({
+         'Authorization': `Bearer ${this.getToken()}`
+       });
+     }
+   }
+   ```
+
+3. **Create Angular Services for CRUD operations:**
+
+   You need services to interact with your ASP.NET Core API, for example for `Invoice`, `Product`, etc.
+
+   **invoice.service.ts:**
+
+   ```typescript
+   import { Injectable } from '@angular/core';
+   import { HttpClient } from '@angular/common/http';
+   import { Observable } from 'rxjs';
+   import { AuthService } from './auth.service';
+
+   @Injectable({
+     providedIn: 'root'
+   })
+   export class InvoiceService {
+     private apiUrl = 'https://localhost:5001/api/invoice';
+
+     constructor(private http: HttpClient, private authService: AuthService) {}
+
+     getInvoices(): Observable<any[]> {
+       return this.http.get<any[]>(this.apiUrl, { headers: this.authService.getHeaders() });
+     }
+
+     createInvoice(invoice: any): Observable<any> {
+       return this.http.post(this.apiUrl, invoice, { headers: this.authService.getHeaders() });
+     }
+
+     updateInvoice(invoice: any): Observable<any> {
+       return this.http.put(this.apiUrl, invoice, { headers: this.authService.getHeaders() });
+     }
+
+     deleteInvoice(id: number): Observable<any> {
+       return this.http.delete(`${this.apiUrl}?id=${id}`, { headers: this.authService.getHeaders() });
+     }
+   }
+   ```
+
+4. **Create Login Component and Handle User Authentication:**
+
+   Create a login form where users can enter credentials to authenticate and retrieve a JWT token.
+
+   **login.component.ts:**
+
+   ```typescript
+   import { Component } from '@angular/core';
+   import { AuthService } from './auth.service';
+   import { Router } from '@angular/router';
+
+   @Component({
+     selector: 'app-login',
+     templateUrl: './login.component.html',
+   })
+   export class LoginComponent {
+     username: string = '';
+     password: string = '';
+
+     constructor(private authService: AuthService, private router: Router) {}
+
+     onLogin() {
+       this.authService.login(this.username, this.password).subscribe(response => {
+         if (response && response.access_Token) {
+           this.authService.saveToken(response.access_Token);
+           this.router.navigate(['/home']);
+         }
+       }, error => {
+         console.error('Login failed:', error);
+       });
+     }
+   }
+   ```
+
+   **login.component.html:**
+
+   ```html
+   <form (submit)="onLogin()">
+     <input type="text" [(ngModel)]="username" placeholder="Username" required />
+     <input type="password" [(ngModel)]="password" placeholder="Password" required />
+     <button type="submit">Login</button>
+   </form>
+   ```
+
+5. **Protect Routes with Angular Guards:**
+
+   Use an Angular guard to protect routes that require authentication, such as the home page or invoice creation.
+
+   **auth.guard.ts:**
+
+   ```typescript
+   import { Injectable } from '@angular/core';
+   import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+   import { AuthService } from './auth.service';
+
+   @Injectable({
+     providedIn: 'root',
+   })
+   export class AuthGuard implements CanActivate {
+     constructor(private authService: AuthService, private router: Router) {}
+
+     canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+       if (this.authService.isAuthenticated()) {
+         return true;
+       } else {
+         this.router.navigate(['/login']);
+         return false;
+       }
+     }
+   }
+   ```
+
+---
+
+### **Step 3: Connect Angular to ASP.NET Core API**
+
+- **In Angular**, ensure the HTTP requests are properly authenticated by adding the `Authorization` header in the service requests (as shown in the `InvoiceService`).
+- **In ASP.NET Core**, ensure the JWT middleware is correctly configured to authenticate requests.
+
+### **Step 4: Run and Test the Application**
+
+1. **Run the ASP.NET Core API** using Visual Studio or `dotnet run` and ensure that the endpoints are accessible.
+2. **Run the Angular frontend** using `ng serve` and test if the login and CRUD operations work by making authenticated API requests.
+
+### **Step 5: Debug and Deploy**
+
+- Ensure all JWT tokens are handled securely, especially during deployment (for example, using `HTTPS`).
+- You can use libraries such as `ngx-auth` in Angular for advanced token handling.

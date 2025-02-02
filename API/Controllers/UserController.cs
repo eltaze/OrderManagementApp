@@ -1,20 +1,16 @@
-﻿using businessLogic.Interface;
+using businessLogic.Interface;
 using businessLogic.Model;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using System.Threading.Tasks.Dataflow;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.IdentityModel.JsonWebTokens;
 using System.IdentityModel.Tokens.Jwt;
 using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 namespace API.Controllers
 {
-    [EnableCors]
+  [EnableCors]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController(IUserBL _userBL) : ControllerBase
@@ -50,7 +46,7 @@ namespace API.Controllers
                 Password = password
             };
             userBL.Add(users);
-            return Ok();
+           return new ObjectResult(GenrateToek(users));
         }
         private  dynamic GenrateToek(UsersUI user)
         {
