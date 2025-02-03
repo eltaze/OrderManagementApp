@@ -1,7 +1,8 @@
 using API.Hcon;
 using AutoMapper;
-using BackEnd.Data;
+using BackEnd;
 using BackEnd.UOF;
+using businessLogic;
 using businessLogic.BL;
 using businessLogic.Interface;
 using businessLogic.Model;
@@ -12,78 +13,84 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-namespace API;
-public static class RegistrationServices
+namespace API
 {
-  public static void ConfigureServices(this WebApplicationBuilder builder)
-  {
-    builder.Services.AddControllers();
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
-
-    // Register the singleton service for managing the in-memory database
-    builder.Services.AddSingleton<InMemoryDatabaseService>();
-
-    // Register the DbContext as scoped, using the singleton service to create instances
-    builder.Services.AddSingleton<InvoiceContext>(provider =>
+    public static class RegistrationServices
     {
-      var databaseService = provider.GetRequiredService<InMemoryDatabaseService>();
-      return databaseService.CreateContext();
-    });
+        public static void ConfigureServices(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddControllers();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
 
-    // Mapper Configuration
-    IMapper mapper = ConfigurAtuoMaper();
-    builder.Services.AddSingleton(mapper);
+            builder.Services.AddDbContext<InvoiceContext>(options =>
+            options.UseInMemoryDatabase("InvoiceDB"));
 
-    // Configure DI for BL
-    builder.Services.AddTransient<IInvoiceBL, InvoiceBL>();
-    builder.Services.AddTransient<IProductBL, ProductBL>();
-    builder.Services.AddTransient<IInvoiceDetailsBL, InvoiceDetailsBL>();
-    builder.Services.AddTransient<IUserBL, UsersBL>();
+            builder.Services.AddScoped<IUOF, UOFLibo>();
 
-    // Configure unit of work
-    builder.Services.AddScoped<IUOF, UOFLibo>();
+=            builder.Services.BackEndServ(); // Ensure BackEndServ method is setting up DI properly
 
-    // In-Memory Cache
-    builder.Services.AddMemoryCache();
-    builder.Services.AddResponseCompression(otn =>
-    {
-      otn.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" });
-    });
+            // Register Business Logic Layer services
+            builder.Services.BusineAdd(); // Ensure BusineAdd method in businessLogic project is doing proper registration
 
-    // JWT Authentication Configuration
-    builder.Services.AddAuthentication(option =>
-    {
-      option.DefaultAuthenticateScheme = "JwtBearer";
-      option.DefaultChallengeScheme = "JwtBearer";
-    }).AddJwtBearer("JwtBearer", JwtBearerOptions =>
-    {
-      JwtBearerOptions.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-      {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySecretKeyIsSecretsoDon'tTellAnyOnePlease")),
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.FromMinutes(5)
-      };
-    });
-  }
-  private static IMapper ConfigurAtuoMaper()
-  {
-    var config = new MapperConfiguration(cfg =>
-    {
-      cfg.CreateMap<Invoices, InvoiceUI>().ReverseMap();
-      cfg.CreateMap<InvoicDetails, InvoiceDetailsUI>().ReverseMap();
-      cfg.CreateMap<Products, ProductsUI>().ReverseMap();
-    });
-    var mapper = config.CreateMapper();
-    return mapper;
-  }
+            // Enable CORS and configure authentication
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: "myAllowSpecificOrigins",
+                                  policy =>
+                                  {
+                                      policy.WithOrigins("http://localhost:4200", "http://localhost:4200");
+                                  });
+            });
 
-  private static IConfiguration ConfigureServices()
-  {
-    var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-    return configuration;
-  }
+            // Register AutoMapper
+            IMapper mapper = ConfigurAtuoMaper();
+            builder.Services.AddSingleton(mapper);
+
+            // Register BL services explicitly
+            builder.Services.AddTransient<IInvoiceBL, InvoiceBL>();
+            builder.Services.AddTransient<IProductBL, ProductBL>();
+            builder.Services.AddTransient<IInvoiceDetailsBL, InvoiceDetailsBL>();
+            builder.Services.AddTransient<IUserBL, UsersBL>();
+
+            // Configure unit of work
+            builder.Services.AddScoped<IUOF, UOFLibo>(); // Ensure UOFLibo is scoped to match DbContext
+
+            // Configure in-memory cache
+            builder.Services.AddMemoryCache();
+
+            // Configure response compression for API
+            builder.Services.AddResponseCompression();
+
+            // JWT Authentication Configuration
+            builder.Services.AddAuthentication(option =>
+            {
+                option.DefaultAuthenticateScheme = "JwtBearer";
+                option.DefaultChallengeScheme = "JwtBearer";
+            }).AddJwtBearer("JwtBearer", JwtBearerOptions =>
+            {
+                JwtBearerOptions.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySecretKeyIsSecretsoDon'tTellAnyOnePlease")),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromMinutes(5)
+                };
+            });
+        }
+
+        private static IMapper ConfigurAtuoMaper()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Invoices, InvoiceUI>().ReverseMap();
+                cfg.CreateMap<InvoicDetails, InvoiceDetailsUI>().ReverseMap();
+                cfg.CreateMap<Products, ProductsUI>().ReverseMap();
+            });
+            var mapper = config.CreateMapper();
+            return mapper;
+        }
+    }
 }

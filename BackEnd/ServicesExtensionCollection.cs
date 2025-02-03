@@ -1,6 +1,7 @@
 ﻿
 
 
+using DataBack.Data;
 using BackEnd.UOF;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,9 +11,12 @@ namespace BackEnd
     {
         public static void BackEndServ(this IServiceCollection services)
         {
-            services.AddDbContext<InvoiceContext>(option =>
-                         option.UseInMemoryDatabase("OrdersDB"));
+            services.AddScoped<InvoiceContext>(); 
             services.AddScoped<IUOF, UOFLibo>();
+            services.AddScoped<ProductRepo>();
+            services.AddScoped<InvoiceRepo>();
+            services.AddScoped<InvoiceDetailsRepo>();
+            services.AddScoped<UserRepo>();
         }
     }
 }

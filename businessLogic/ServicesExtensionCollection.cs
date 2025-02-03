@@ -9,14 +9,14 @@ namespace businessLogic
     {
         public static void BusineAdd(this IServiceCollection Services)
         {
-            Services.BackEndServ();
             Services.AddTransient<IInvoiceBL, InvoiceBL>();
             Services.AddTransient<IProductBL, ProductBL>();
             Services.AddTransient<IInvoiceDetailsBL, InvoiceDetailsBL>();
             Services.AddTransient<IUserBL, UsersBL>();
+
+            // If you have any Mapper configuration, do it here
             IMapper mapper = ConfigurAtuoMaper();
             Services.AddSingleton(mapper);
-            Services.AddMemoryCache();
         }
         static IMapper ConfigurAtuoMaper()
         {
